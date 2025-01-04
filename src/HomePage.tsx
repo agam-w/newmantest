@@ -1,17 +1,15 @@
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { authGetToken, getProfile } from "./utils/api.client";
-import { $jwtToken, $page, $profile } from "./stores/auth";
+import { $jwtToken, $page, $profile, Page } from "./stores/auth";
 import { useStore } from "@nanostores/react";
-import Popup from "./components/Popup";
-import { Button } from "@headlessui/react";
+import classNames from "classnames";
 
 export default function HomePage() {
   const account = useAccount();
   const jwtToken = useStore($jwtToken);
   const profile = useStore($profile);
   const page = useStore($page);
-  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     if (account.address) {
@@ -31,8 +29,30 @@ export default function HomePage() {
     }
   }, [jwtToken]);
 
+  const transformPathToName = (page: Page): string => {
+    if (!page.startsWith("/")) return page; // Ensure the page starts with "/"
+    const name = page.slice(1); // Remove the leading "/"
+    return name.charAt(0).toUpperCase() + name.slice(1); // Capitalize the first letter
+  };
+
   return (
-    <div className="container">
+    <div className="container px-4">
+      <div className="flex justify-between items-center md:justify-start gap-4">
+        {Object.values(Page).map((path) => (
+          <button
+            key={path}
+            className={classNames(
+              "px-4 py-2 font-semibold rounded-md shadow focus:outline-none focus:ring-2 transition-transform duration-300 ease-in-out hover:scale-105",
+              page === path
+                ? "bg-blue-600 text-white focus:ring-blue-300"
+                : "bg-gray-300 text-gray-800 focus:ring-gray-300"
+            )}
+            onClick={() => $page.set(path)}
+          >
+            {transformPathToName(path)}
+          </button>
+        ))}
+      </div>
       {page === "/home" && (
         <div>
           {!account.isConnected && (
@@ -54,26 +74,7 @@ export default function HomePage() {
           )}
         </div>
       )}
-      {page === "/claim" && (
-        <div>
-          claim page
-          <Button
-            className="rounded bg-sky-600 py-2 px-4 text-sm text-white data-[hover]:bg-sky-500 data-[active]:bg-sky-700"
-            onClick={() => setVisible(true)}
-          >
-            claim
-          </Button>
-          <div className="hidden md:block">
-            <Popup
-              visible={visible}
-              onClickClose={() => setVisible(false)}
-              showCloseButton={true}
-            >
-              <div className="bg-white">check claim</div>
-            </Popup>
-          </div>
-        </div>
-      )}
+      {page === "/claim" && <div>claim page</div>}
     </div>
   );
 }

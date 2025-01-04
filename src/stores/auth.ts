@@ -5,4 +5,10 @@ export const $jwtToken = atom<string | undefined>();
 
 export const $profile = atom<User | undefined>();
 
-export const $page = atom<string>("/home");
+export enum Page {
+  Home = "/home",
+  Claim = "/claim",
+  Profile = "/profile",
+}
+
+export const $page = atom<Page>(Page.Home);
