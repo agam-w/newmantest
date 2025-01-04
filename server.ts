@@ -1,5 +1,7 @@
 import fs from "node:fs/promises";
 import express from "express";
+import { apiRouter } from "./src/server/router";
+import bodyParser from "body-parser";
 
 // Constants
 const isProduction = process.env.NODE_ENV === "production";
@@ -13,6 +15,9 @@ const templateHtml = isProduction
 
 // Create http server
 const app = express();
+
+app.use(bodyParser.urlencoded());
+app.use(bodyParser.json());
 
 // Add Vite or respective production middlewares
 /** @type {import('vite').ViteDevServer | undefined} */
@@ -32,9 +37,8 @@ if (!isProduction) {
   app.use(base, sirv("./dist/client", { extensions: [] }));
 }
 
-app.get("/api/hello", (req, res) => {
-  res.json({ message: "Hello from server" });
-});
+// add server api router
+app.use("/api", apiRouter);
 
 // Serve HTML
 app.use("*all", async (req, res) => {
