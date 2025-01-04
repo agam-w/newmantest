@@ -20,23 +20,25 @@ export const usersRelations = relations(usersTable, ({ one }) => ({
 
 export const userStatTable = pgTable("userStats", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  userId: integer().references(() => usersTable.id),
-  totalPoints: integer().notNull(),
+  userId: integer()
+    .unique()
+    .references(() => usersTable.id),
+  totalPoints: integer().default(0),
   // connect wallet
-  questConnectDone: boolean().notNull(),
-  questConnectDoneAt: timestamp().notNull(),
-  questConnectClaimed: boolean().notNull(),
-  questConnectClaimedAt: timestamp().notNull(),
+  questConnectDone: boolean().default(false),
+  questConnectDoneAt: timestamp(),
+  questConnectClaimed: boolean().default(false),
+  questConnectClaimedAt: timestamp(),
   // edit profile name
-  questProfileNameDone: boolean().notNull(),
-  questProfileNameDoneAt: timestamp().notNull(),
-  questProfileNameClaimed: boolean().notNull(),
-  questProfileNameClaimedAt: timestamp().notNull(),
+  questProfileNameDone: boolean().default(false),
+  questProfileNameDoneAt: timestamp(),
+  questProfileNameClaimed: boolean().default(false),
+  questProfileNameClaimedAt: timestamp(),
   // share
-  questShareDone: boolean().notNull(),
-  questShareDoneAt: timestamp().notNull(),
-  questShareClaimed: boolean().notNull(),
-  questShareClaimedAt: timestamp().notNull(),
+  questShareDone: boolean().default(false),
+  questShareDoneAt: timestamp(),
+  questShareClaimed: boolean().default(false),
+  questShareClaimedAt: timestamp(),
 });
 
 export const userStatsRelations = relations(userStatTable, ({ one }) => ({
