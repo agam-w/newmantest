@@ -11,11 +11,15 @@
     "preview": "cross-env NODE_ENV=production node server"
   },
   "dependencies": {
+    "@rainbow-me/rainbowkit": "^2.2.1",
+    "@tanstack/react-query": "^5.62.14",
     "compression": "^1.7.5",
     "express": "^5.0.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "sirv": "^3.0.0"
+    "sirv": "^3.0.0",
+    "viem": "^2.22.2",
+    "wagmi": "^2.14.6"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
