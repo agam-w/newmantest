@@ -1,5 +1,6 @@
 import { Address } from "viem";
 import { $jwtToken } from "../stores/auth";
+import { User } from "../types";
 
 export async function authGetToken(address: Address) {
   const res = await fetch("/api/auth", {
@@ -23,6 +24,6 @@ export async function getProfile() {
       Authorization: `Bearer ${token}`,
     },
   });
-  const data = (await res.json()) as { message: string };
+  const data = (await res.json()) as { user: User };
   return data;
 }
