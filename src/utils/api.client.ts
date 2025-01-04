@@ -27,3 +27,41 @@ export async function getProfile() {
   const data = (await res.json()) as { user: UserWithStats };
   return data;
 }
+
+export async function questDone(quest: string) {
+  const token = $jwtToken.get();
+
+  const res = await fetch("/api/quest-done", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ quest }),
+  });
+  if (res.status !== 200) {
+    console.log("res", res.statusText);
+    throw new Error("Quest cannot be completed");
+  }
+  const data = (await res.json()) as { message: string };
+  console.log("data", data);
+}
+
+export async function claimQuest(quest: string) {
+  const token = $jwtToken.get();
+
+  const res = await fetch("/api/claim", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ quest }),
+  });
+  if (res.status !== 200) {
+    console.log("res", res.statusText);
+    // throw new Error("Quest cannot be claimed");
+  }
+  const data = (await res.json()) as { message: string };
+  console.log("data", data);
+}

@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
-import { authGetToken, getProfile } from "./utils/api.client";
+import {
+  authGetToken,
+  claimQuest,
+  getProfile,
+  questDone,
+} from "./utils/api.client";
 import { $jwtToken, $page, $profile, Page } from "./stores/auth";
 import { useStore } from "@nanostores/react";
 import classNames from "classnames";
-import { Button } from "@headlessui/react";
 import { getQuestClaimed, getQuestCompleted, quests } from "./utils/quests";
 
 export default function HomePage() {
@@ -13,23 +17,43 @@ export default function HomePage() {
   const profile = useStore($profile);
   const page = useStore($page);
 
-  useEffect(() => {
+  const getAuthToken = async () => {
     if (account.address) {
       authGetToken(account.address).then((token) => {
         // console.log("token", token);
         $jwtToken.set(token);
       });
     }
+  };
+
+  useEffect(() => {
+    getAuthToken();
   }, [account]);
+
+  // fetch profile and set to store
+  const getProfileData = async () => {
+    getProfile().then((data) => {
+      // console.log("data", data);
+      $profile.set(data.user);
+    });
+  };
 
   useEffect(() => {
     if (jwtToken) {
-      getProfile().then((data) => {
-        // console.log("data", data);
-        $profile.set(data.user);
-      });
+      getProfileData();
     }
   }, [jwtToken]);
+
+  const refresh = () => {
+    getProfileData();
+  };
+
+  const shareQuest = async () => {
+    const url = window.location.href;
+    // copy to clipboard
+    await navigator.clipboard.writeText(url);
+    console.log("url copied", url);
+  };
 
   const transformPathToName = (page: Page): string => {
     if (!page.startsWith("/")) return page; // Ensure the page starts with "/"
@@ -47,7 +71,7 @@ export default function HomePage() {
               "px-4 py-2 font-semibold rounded-md shadow focus:outline-none focus:ring-2 transition-transform duration-300 ease-in-out hover:scale-105",
               page === path
                 ? "bg-blue-600 text-white focus:ring-blue-300"
-                : "bg-gray-300 text-gray-800 focus:ring-gray-300"
+                : "bg-gray-300 text-gray-800 focus:ring-gray-300",
             )}
             onClick={() => $page.set(path)}
           >
@@ -114,14 +138,18 @@ export default function HomePage() {
 
                           {/* not completed */}
                           {!completed?.isCompleted && (
-                            <Button
+                            <button
                               className="rounded bg-sky-600 py-2 px-4 text-sm text-white"
                               onClick={() => {
-                                console.log("go");
+                                if (quest.type === "share") {
+                                  shareQuest().then(() => {
+                                    questDone(quest.type).then(() => {});
+                                  });
+                                }
                               }}
                             >
-                              Go
-                            </Button>
+                              {quest.type === "share" ? "Share" : "Go"}
+                            </button>
                           )}
                         </div>
                       )}
@@ -136,14 +164,16 @@ export default function HomePage() {
 
                           {/* not claimed */}
                           {completed?.isCompleted && !claimed?.isClaimed && (
-                            <Button
+                            <button
                               className="rounded bg-green-600 py-2 px-4 text-sm text-white"
                               onClick={() => {
-                                console.log("claim");
+                                claimQuest(quest.type).then(() => {
+                                  refresh();
+                                });
                               }}
                             >
                               Claim Reward
-                            </Button>
+                            </button>
                           )}
                         </div>
                       )}

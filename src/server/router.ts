@@ -5,6 +5,8 @@ import { jwtMiddleware } from "./jwtMiddleware";
 import { db } from "../db";
 import { usersTable, userStatTable } from "../db/schema";
 import { eq } from "drizzle-orm";
+import { QuestType } from "../types";
+import { quests } from "../utils/quests";
 
 const api = express.Router();
 
@@ -98,6 +100,132 @@ api.get("/profile", jwtMiddleware, async (req, res) => {
 
   if (user) {
     res.json({ user });
+    return;
+  }
+
+  res.status(404).json({ error: "User not found" });
+});
+
+api.post("/quest-done", jwtMiddleware, async (req, res) => {
+  const quest = req.body.quest as QuestType;
+  if (!quest) {
+    res.status(400).json({ error: "questType is required" });
+    return;
+  }
+
+  // check current user
+  const user = await db.query.usersTable.findFirst({
+    where: eq(usersTable.walletAddress, req.user?.address || ""),
+    with: {
+      userStats: true,
+    },
+  });
+
+  if (user && user.userStats) {
+    // check if quest done but not claimed
+    switch (quest) {
+      case "share":
+        // update userStats
+        await db
+          .update(userStatTable)
+          .set({
+            questShareDone: true,
+            questShareDoneAt: new Date(),
+          })
+          .where(eq(userStatTable.userId, user.id));
+        res.json({ message: "Quest completed successfully" });
+        break;
+    }
+
+    res.status(400).json({ message: "Quest cannot be completed" });
+    return;
+  }
+
+  res.status(404).json({ error: "User not found" });
+});
+
+api.post("/claim", jwtMiddleware, async (req, res) => {
+  const quest = req.body.quest as QuestType;
+  if (!quest) {
+    res.status(400).json({ error: "questType is required" });
+    return;
+  }
+
+  // check current user
+  const user = await db.query.usersTable.findFirst({
+    where: eq(usersTable.walletAddress, req.user?.address || ""),
+    with: {
+      userStats: true,
+    },
+  });
+
+  if (user && user.userStats) {
+    let claimable = false;
+    // check if quest done but not claimed
+    switch (quest) {
+      case "connect":
+        claimable =
+          (user.userStats?.questConnectDone &&
+            !user.userStats?.questConnectClaimed) ||
+          false;
+        if (claimable) {
+          // claim and update userStats
+          await db
+            .update(userStatTable)
+            .set({
+              questConnectClaimed: true,
+              questConnectClaimedAt: new Date(),
+              totalPoints:
+                (user.userStats.totalPoints ?? 0) +
+                (quests.find((i) => i.type == quest)?.points ?? 0),
+            })
+            .where(eq(userStatTable.userId, user.id));
+          res.json({ message: "Quest claimed successfully" });
+        }
+        break;
+      case "profileName":
+        claimable =
+          (user.userStats?.questProfileNameDone &&
+            !user.userStats?.questProfileNameClaimed) ||
+          false;
+        if (claimable) {
+          // claim and update userStats
+          await db
+            .update(userStatTable)
+            .set({
+              questProfileNameClaimed: true,
+              questProfileNameClaimedAt: new Date(),
+              totalPoints:
+                (user.userStats.totalPoints ?? 0) +
+                (quests.find((i) => i.type == quest)?.points ?? 0),
+            })
+            .where(eq(userStatTable.userId, user.id));
+          res.json({ message: "Quest claimed successfully" });
+        }
+        break;
+      case "share":
+        claimable =
+          (user.userStats?.questShareDone &&
+            !user.userStats?.questShareClaimed) ||
+          false;
+        if (claimable) {
+          // claim and update userStats
+          await db
+            .update(userStatTable)
+            .set({
+              questShareClaimed: true,
+              questShareClaimedAt: new Date(),
+              totalPoints:
+                (user.userStats.totalPoints ?? 0) +
+                (quests.find((i) => i.type == quest)?.points ?? 0),
+            })
+            .where(eq(userStatTable.userId, user.id));
+          res.json({ message: "Quest claimed successfully" });
+        }
+        break;
+    }
+
+    res.status(400).json({ message: "Quest cannot be claimed" });
     return;
   }
 
