@@ -2,6 +2,19 @@ import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { SECRET_KEY } from "./constants";
 
+interface AuthUser {
+  id: number;
+  address: string;
+}
+
+declare global {
+  namespace Express {
+    export interface Request {
+      user?: AuthUser;
+    }
+  }
+}
+
 export const jwtMiddleware = (
   req: Request,
   res: Response,
@@ -17,7 +30,7 @@ export const jwtMiddleware = (
 
   try {
     const decoded = jwt.verify(token, SECRET_KEY);
-    console.log("decoded", decoded);
+    req.user = decoded as AuthUser;
 
     next();
   } catch (error) {

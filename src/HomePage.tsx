@@ -18,17 +18,29 @@ export default function HomePage() {
   }, [account]);
 
   useEffect(() => {
-    getProfile().then((data) => {
-      console.log("data", data);
-    });
+    if (jwtToken) {
+      getProfile().then((data) => {
+        console.log("data", data);
+      });
+    }
   }, [jwtToken]);
 
   return (
     <div className="container">
-      <div className="py-4">
-        <p className="font-medium">Connected Account:</p>
-        <p className="text">{account.address}</p>
-      </div>
+      {!account.isConnected && (
+        <div className="py-4">
+          <p className="">Please connect wallet to earn points</p>
+        </div>
+      )}
+      {account.isConnected && (
+        <div className="py-4">
+          <p className="font-medium">Connected Account:</p>
+          <p className="text">wallet address: {account.address}</p>
+
+          <p className="font-medium">Profile:</p>
+          {/* <p className="text">name: {profile?.name}</p> */}
+        </div>
+      )}
     </div>
   );
 }
