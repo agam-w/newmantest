@@ -17,6 +17,8 @@ export default function HomePage() {
   const profile = useStore($profile);
   const page = useStore($page);
 
+  const [showEditProfile, setShowEditProfile] = useState(false);
+
   const getAuthToken = async () => {
     if (account.address) {
       authGetToken(account.address).then((token) => {
@@ -61,6 +63,13 @@ export default function HomePage() {
     return name.charAt(0).toUpperCase() + name.slice(1); // Capitalize the first letter
   };
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+    console.log("formData", formData.get("name"));
+  };
+
   return (
     <div className="container px-4">
       <div className="flex justify-between items-center md:justify-start gap-4">
@@ -98,7 +107,38 @@ export default function HomePage() {
                 <p className="text-xl font-medium mb-4">Profile</p>
                 <p className="text">Name: {profile?.name}</p>
                 <p className="text">Address: {profile?.walletAddress}</p>
-                <p className="text">
+
+                <button
+                  className="mt-4 bg-neutral-200 py-2 px-4 rounded"
+                  onClick={() => setShowEditProfile(!showEditProfile)}
+                >
+                  Edit Profile
+                </button>
+
+                {showEditProfile && (
+                  <form
+                    className="max-w-md mt-4 border rounded p-4"
+                    onSubmit={handleSubmit}
+                  >
+                    <p className="text-lg mb-2">Edit Profile</p>
+                    <div className="flex flex-col gap-4">
+                      <label htmlFor="name" className="text-sm">
+                        Name
+                      </label>
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        className="rounded border p-2"
+                      />
+                    </div>
+                    <button className="mt-4 bg-blue-500 py-2 px-4 rounded text-white">
+                      Save
+                    </button>
+                  </form>
+                )}
+
+                <p className="mt-8 text-xl font-medium">
                   Total Points: {profile?.userStats.totalPoints}
                 </p>
               </div>

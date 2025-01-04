@@ -28,6 +28,22 @@ export async function getProfile() {
   return data;
 }
 
+export async function updateProfile(name: string) {
+  const token = $jwtToken.get();
+
+  const res = await fetch("/api/profile/edit", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+
+      body: JSON.stringify({ fullname: name }),
+    },
+  });
+  const data = (await res.json()) as { user: UserWithStats };
+  return data;
+}
+
 export async function questDone(quest: string) {
   const token = $jwtToken.get();
 

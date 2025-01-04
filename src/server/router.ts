@@ -106,6 +106,37 @@ api.get("/profile", jwtMiddleware, async (req, res) => {
   res.status(404).json({ error: "User not found" });
 });
 
+api.post("/profile/edit", jwtMiddleware, async (req, res) => {
+  const name = req.body.name;
+  if (!name) {
+    res.status(400).json({ error: "name is required" });
+    return;
+  }
+
+  // check current user
+  const user = await db.query.usersTable.findFirst({
+    where: eq(usersTable.walletAddress, req.user?.address || ""),
+    with: {
+      userStats: true,
+    },
+  });
+
+  if (user) {
+    // check if quest done but not claimed
+    await db
+      .update(usersTable)
+      .set({
+        name,
+      })
+      .where(eq(userStatTable.userId, user.id));
+
+    res.json({ message: "Profile updated successfully" });
+    return;
+  }
+
+  res.status(404).json({ error: "User not found" });
+});
+
 api.post("/quest-done", jwtMiddleware, async (req, res) => {
   const quest = req.body.quest as QuestType;
   if (!quest) {
