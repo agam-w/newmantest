@@ -73,7 +73,7 @@ export default function HomePage() {
     if (!name) return;
     updateProfile(name as string).then(() => {
       refresh();
-      e.currentTarget.reset();
+      setShowEditProfile(false);
     });
   };
 
@@ -106,10 +106,6 @@ export default function HomePage() {
           )}
           {account.isConnected && (
             <div className="py-4 space-y-8">
-              <div>
-                <p className="font-medium">Connected Wallet:</p>
-                <p className="text">Wallet Address: {account.address}</p>
-              </div>
               <div>
                 <p className="text-xl font-medium mb-4">Profile</p>
                 <p className="text">Name: {profile?.name}</p>
@@ -194,6 +190,8 @@ export default function HomePage() {
                                   setTimeout(() => {
                                     questDone(quest.type).then(() => refresh());
                                   }, 3000);
+                                } else if (quest.type === "profileName") {
+                                  setShowEditProfile(true);
                                 }
                               }}
                             >
