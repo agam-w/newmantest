@@ -31,7 +31,7 @@ export default function Layout({ children }: PropsWithChildren) {
           />
         ))}
       </div>
-      <nav className="container">
+      <nav className="container px-4">
         <div className="max-w-6xl mx-auto flex justify-between items-center py-4">
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
             Newman

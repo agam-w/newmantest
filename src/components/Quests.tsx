@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle, Star } from "lucide-react";
+import { CheckCircle, Loader2, Star } from "lucide-react";
 import { $isProfileEditing, $profile } from "@/stores/auth";
 import { questDone, claimQuest } from "@/utils/api.client";
 import {
@@ -16,6 +16,9 @@ import { useToast } from "@/hooks/use-toast";
 export default function Quests() {
   const profile = useStore($profile);
   const { toast } = useToast();
+
+  const [isClaiming, setIsClaiming] = useState(false);
+  const [claimingType, setClaimingType] = useState<string | null>(null);
 
   const shareQuest = async () => {
     const url = window.location.href;
@@ -116,8 +119,12 @@ export default function Quests() {
                               ? "bg-green-500 cursor-not-allowed"
                               : "bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
                           }`}
-                          onClick={() => {
-                            claimQuest(quest.type).then(() => {
+                          onClick={async () => {
+                            setIsClaiming(true);
+                            setClaimingType(quest.type);
+                            await claimQuest(quest.type).then(() => {
+                              setClaimingType(null);
+                              setIsClaiming(false);
                               setRecentlyCompleted(quest.type);
                               setTimeout(
                                 () => setRecentlyCompleted(null),
@@ -126,8 +133,13 @@ export default function Quests() {
                               // refresh
                               getProfileData();
                             });
+                            setIsClaiming(false);
+                            setClaimingType(null);
                           }}
-                          disabled={claimed?.isClaimed}
+                          disabled={
+                            claimed?.isClaimed ||
+                            (isClaiming && claimingType === quest.type)
+                          }
                         >
                           {claimed?.isClaimed ? (
                             <>
@@ -135,7 +147,12 @@ export default function Quests() {
                               <span>Claimed</span>
                             </>
                           ) : (
-                            <span>Claim Reward</span>
+                            <>
+                              <span>Claim Reward</span>
+                              {isClaiming && claimingType === quest.type && (
+                                <Loader2 className="w-5 h-5 sm:w-6 sm:h-6 animate-spin" />
+                              )}
+                            </>
                           )}
                         </motion.button>
                       )}
