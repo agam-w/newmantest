@@ -1,22 +1,22 @@
-import { Quest, UserStat } from "../types";
+import { Quest, QuestType, UserStat } from "../types";
 
 export const quests: Quest[] = [
   {
     type: "connect",
     title: "Connect Wallet",
-    description: "Connect your wallet and get free 500 points",
+    description: "Connect your wallet and start earning points",
     points: 500,
   },
   {
     type: "profileName",
     title: "Edit Profile Name",
-    description: "Edit your profile name",
+    description: "Edit your profile",
     points: 100,
   },
   {
     type: "share",
-    title: "Share this App",
-    description: "Share this app with your friends",
+    title: "Share on Social Media",
+    description: "",
     points: 300,
   },
 ];
@@ -58,5 +58,16 @@ export function getQuestClaimed(quest: Quest, userStat: UserStat) {
         isClaimed: userStat.questShareClaimed,
         claimedAt: userStat.questShareClaimedAt?.toString(),
       };
+  }
+}
+
+export function getBadgeByQuestType(questType: QuestType) {
+  switch (questType) {
+    case "connect":
+      return "Early Bird";
+    case "profileName":
+      return "It's Me";
+    case "share":
+      return "Social Butterfly";
   }
 }

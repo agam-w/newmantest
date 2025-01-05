@@ -8,36 +8,24 @@ import { Wallet, Medal, Trophy, ChevronRight, Loader2 } from "lucide-react";
 import Profile from "./components/Profile";
 import NFTDisplay from "./components/NFTDisplay";
 import Quests from "./components/Quests";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 
 export default function HomePage() {
-  const account = useAccount();
+  const { isConnecting, isConnected, address } = useAccount();
+  const { openConnectModal } = useConnectModal();
 
   // on connected wallet, get jwt token and set to store
   useEffect(() => {
     const getAuthToken = async () => {
-      if (account.address) {
-        authGetToken(account.address).then((token) => {
+      if (address) {
+        authGetToken(address).then((token) => {
           // console.log("token", token);
           $jwtToken.set(token);
         });
       }
     };
     getAuthToken();
-  }, [account]);
-
-  const [isConnecting, setIsConnecting] = useState(false);
-  const [userBadges, setUserBadges] = useState([]);
-
-  const connectWallet = async () => {
-    setIsConnecting(true);
-    // Simulate wallet connection delay
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    setIsConnecting(false);
-  };
-
-  const completeQuest = (points: number, badge: string) => {
-    setUserBadges((prevBadges) => [...prevBadges, badge]);
-  };
+  }, [address]);
 
   return (
     <div className="container px-4">
@@ -48,7 +36,7 @@ export default function HomePage() {
         className="max-w-6xl mx-auto relative z-10"
       >
         <AnimatePresence mode="wait">
-          {!account.isConnected ? (
+          {!isConnected ? (
             <motion.div
               key="not-connected"
               initial={{ opacity: 0, y: 20 }}
@@ -70,7 +58,7 @@ export default function HomePage() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-3 sm:py-4 px-6 sm:px-8 rounded-full text-lg sm:text-xl shadow-lg hover:shadow-xl transition duration-300 flex items-center justify-center space-x-3 mx-auto"
-                onClick={connectWallet}
+                onClick={openConnectModal}
                 disabled={isConnecting}
               >
                 {isConnecting ? (
@@ -121,7 +109,7 @@ export default function HomePage() {
                   whileHover={{ scale: 1.02 }}
                   className="bg-white bg-opacity-10 p-4 sm:p-6 rounded-lg shadow-lg backdrop-blur-sm border border-white border-opacity-20"
                 >
-                  <Profile badges={userBadges} />
+                  <Profile />
                 </motion.div>
 
                 <motion.div
@@ -133,10 +121,10 @@ export default function HomePage() {
               </div>
 
               <motion.div
-                whileHover={{ scale: 1.02 }}
+                // whileHover={{ scale: 1.02 }}
                 className="bg-white bg-opacity-10 p-4 sm:p-6 rounded-lg shadow-lg backdrop-blur-sm border border-white border-opacity-20"
               >
-                <Quests onComplete={completeQuest} />
+                <Quests />
               </motion.div>
             </motion.div>
           )}

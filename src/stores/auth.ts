@@ -11,3 +11,5 @@ $jwtToken.subscribe((token) => {
     getProfileData();
   }
 });
+
+export const $isProfileEditing = atom(false);

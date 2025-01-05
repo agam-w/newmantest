@@ -31,9 +31,9 @@ export default function Layout({ children }: PropsWithChildren) {
           />
         ))}
       </div>
-      <nav className="">
-        <div className="container flex justify-between items-center p-4">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-12 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
+      <nav className="container">
+        <div className="max-w-6xl mx-auto flex justify-between items-center py-4">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
             Newman
           </h1>
 
@@ -41,7 +41,7 @@ export default function Layout({ children }: PropsWithChildren) {
         </div>
       </nav>
 
-      {children}
+      <div className="py-6">{children}</div>
     </main>
   );
 }

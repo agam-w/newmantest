@@ -2,14 +2,17 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Edit2, Save, X, Loader2 } from "lucide-react";
 import { useStore } from "@nanostores/react";
-import { $profile } from "@/stores/auth";
+import { $isProfileEditing, $profile } from "@/stores/auth";
 import { updateProfile } from "@/utils/api.client";
+import { getProfileData } from "@/utils/action";
+import { useToast } from "@/hooks/use-toast";
 
 export default function ProfileEditor() {
-  const [isEditing, setIsEditing] = useState(false);
+  const isEditing = useStore($isProfileEditing);
   const [isSaving, setIsSaving] = useState(false);
 
   const profile = useStore($profile);
+  const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -20,9 +23,11 @@ export default function ProfileEditor() {
 
     if (!name) return;
     updateProfile(name as string).then(() => {
-      // refresh();
+      // refresh
+      getProfileData();
       setIsSaving(false);
-      setIsEditing(false);
+      $isProfileEditing.set(false);
+      toast({ description: "Profile updated successfully" });
     });
   };
 
@@ -46,7 +51,7 @@ export default function ProfileEditor() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-2 px-4 rounded-full shadow-lg hover:shadow-xl transition duration-300 flex items-center space-x-2 text-sm sm:text-base"
-              onClick={() => setIsEditing(true)}
+              onClick={() => $isProfileEditing.set(true)}
             >
               <Edit2 className="w-4 h-4 sm:w-5 sm:h-5" />
               <span>Edit Profile</span>
@@ -95,7 +100,7 @@ export default function ProfileEditor() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 type="button"
-                onClick={() => setIsEditing(false)}
+                onClick={() => $isProfileEditing.set(false)}
                 className="bg-gradient-to-r from-red-400 to-pink-500 text-white font-bold py-2 px-4 rounded-full shadow-lg hover:shadow-xl transition duration-300 flex items-center space-x-2 text-sm sm:text-base"
               >
                 <X className="w-4 h-4 sm:w-5 sm:h-5" />

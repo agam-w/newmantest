@@ -5,6 +5,7 @@ import Layout from "./Layout";
 import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
 import HomePage from "./HomePage";
+import { Toaster } from "./components/ui/toaster";
 
 const queryClient = new QueryClient();
 
@@ -17,6 +18,7 @@ function App() {
           <Layout>
             <HomePage />
           </Layout>
+          <Toaster />
           {/* App */}
         </RainbowKitProvider>
       </QueryClientProvider>

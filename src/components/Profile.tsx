@@ -4,11 +4,7 @@ import { motion } from "framer-motion";
 import { Star, Medal } from "lucide-react";
 import ProfileEditor from "./ProfileEditor";
 
-interface ProfileProps {
-  badges: string[];
-}
-
-export default function Profile({ badges }: ProfileProps) {
+export default function Profile() {
   const profile = useStore($profile);
 
   return (
@@ -24,7 +20,7 @@ export default function Profile({ badges }: ProfileProps) {
           </span>
         </div>
         <div className="flex flex-wrap gap-2 sm:gap-3">
-          {badges.map((badge, index) => (
+          {["Early Bird", "It's Me", "Social Butterfly"].map((badge, index) => (
             <motion.div
               key={index}
               whileHover={{ scale: 1.1, rotate: 5 }}
