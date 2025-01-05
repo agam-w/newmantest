@@ -122,11 +122,19 @@ api.post("/profile/edit", jwtMiddleware, async (req, res) => {
   });
 
   if (user) {
-    // check if quest done but not claimed
     await db
       .update(usersTable)
       .set({
         name,
+      })
+      .where(eq(usersTable.id, user.id));
+
+    // mark done
+    await db
+      .update(userStatTable)
+      .set({
+        questProfileNameDone: true,
+        questProfileNameDoneAt: new Date(),
       })
       .where(eq(userStatTable.userId, user.id));
 

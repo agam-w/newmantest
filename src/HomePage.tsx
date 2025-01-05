@@ -5,6 +5,7 @@ import {
   claimQuest,
   getProfile,
   questDone,
+  updateProfile,
 } from "./utils/api.client";
 import { $jwtToken, $page, $profile, Page } from "./stores/auth";
 import { useStore } from "@nanostores/react";
@@ -67,7 +68,13 @@ export default function HomePage() {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
-    console.log("formData", formData.get("name"));
+    const name = formData.get("name");
+
+    if (!name) return;
+    updateProfile(name as string).then(() => {
+      refresh();
+      e.currentTarget.reset();
+    });
   };
 
   return (
@@ -130,6 +137,7 @@ export default function HomePage() {
                         id="name"
                         name="name"
                         className="rounded border p-2"
+                        defaultValue={profile?.name}
                       />
                     </div>
                     <button className="mt-4 bg-blue-500 py-2 px-4 rounded text-white">
@@ -182,9 +190,10 @@ export default function HomePage() {
                               className="rounded bg-sky-600 py-2 px-4 text-sm text-white"
                               onClick={() => {
                                 if (quest.type === "share") {
-                                  shareQuest().then(() => {
-                                    questDone(quest.type).then(() => {});
-                                  });
+                                  shareQuest();
+                                  setTimeout(() => {
+                                    questDone(quest.type).then(() => refresh());
+                                  }, 3000);
                                 }
                               }}
                             >

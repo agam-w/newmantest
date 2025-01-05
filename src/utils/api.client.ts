@@ -36,9 +36,8 @@ export async function updateProfile(name: string) {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
-
-      body: JSON.stringify({ fullname: name }),
     },
+    body: JSON.stringify({ name }),
   });
   const data = (await res.json()) as { user: UserWithStats };
   return data;
