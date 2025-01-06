@@ -16,4 +16,4 @@ export const $isProfileEditing = atom(false);
 
 export const $getNftDataIsLoading = atom(true);
 
-export const $nftDataCount = atom<Number[]>([]);
+export const $nftDataCount = atom<number[]>([]);

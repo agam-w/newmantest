@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Edit2, Save, X, Loader2 } from "lucide-react";
 import { useStore } from "@nanostores/react";
@@ -31,6 +31,13 @@ export default function ProfileEditor() {
     });
   };
 
+  const walletAddressToShow = useMemo(() => {
+    return `${profile?.walletAddress.substring(
+      0,
+      32
+    )}...${profile?.walletAddress.slice(-3)}`;
+  }, [profile?.walletAddress]);
+
   return (
     <div className="mt-4 sm:mt-6">
       <AnimatePresence mode="wait">
@@ -42,10 +49,10 @@ export default function ProfileEditor() {
             exit={{ opacity: 0 }}
           >
             <h3 className="text-xl sm:text-2xl font-semibold mb-2">
-              {profile?.name}
+              {profile?.name || "-"}
             </h3>
             <p className="text-sm sm:text-base text-gray-300 mb-4">
-              {profile?.walletAddress}
+              {walletAddressToShow}
             </p>
             <motion.button
               whileHover={{ scale: 1.05 }}

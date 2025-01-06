@@ -28,8 +28,12 @@ export default function Quests() {
   };
 
   const [recentlyCompleted, setRecentlyCompleted] = useState<string | null>(
-    null,
+    null
   );
+
+  const scrollToTop = () => {
+    document.documentElement.scrollTo({ behavior: "smooth", top: 0 });
+  };
 
   return (
     <div>
@@ -90,6 +94,7 @@ export default function Quests() {
                             }, 3000);
                           } else if (quest.type === "profileName") {
                             $isProfileEditing.set(true);
+                            scrollToTop();
                           }
                         }}
                         disabled={completed?.isCompleted}
@@ -128,7 +133,7 @@ export default function Quests() {
                               setRecentlyCompleted(quest.type);
                               setTimeout(
                                 () => setRecentlyCompleted(null),
-                                2000,
+                                2000
                               );
                               // refresh
                               getProfileData();

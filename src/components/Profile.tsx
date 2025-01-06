@@ -59,7 +59,7 @@ export default function Profile() {
                       badge === "profileName" &&
                         "bg-gradient-to-r from-green-400 to-blue-600",
                       badge === "share" &&
-                        "bg-gradient-to-r from-blue-400 to-purple-600",
+                        "bg-gradient-to-r from-blue-400 to-purple-600"
                     )}
                   >
                     {badge === "connect" && (

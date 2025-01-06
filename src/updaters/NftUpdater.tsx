@@ -4,13 +4,15 @@ import {
   ppgCollectionContract,
   punksCollectionContract,
 } from "@/utils/collectionContracts";
-import { useReadContracts } from "wagmi";
+import { useAccount, useReadContracts } from "wagmi";
 import { zeroAddress } from "viem";
 import { useEffect } from "react";
 import { $getNftDataIsLoading, $nftDataCount } from "@/stores/auth";
 
 const NftUpdater = () => {
-  const profileAddr = "0xd890d93be26351a064fdc64f0e253603e43270a8";
+  const { address } = useAccount();
+  //   const mockProfileAddr = "0xd890d93be26351a064fdc64f0e253603e43270a8";
+  const profileAddr = address ?? zeroAddress;
 
   const { data: nftCollectionsData, error: multiReadError } = useReadContracts({
     contracts: [
@@ -39,15 +41,10 @@ const NftUpdater = () => {
         chainId: 1,
       },
     ],
-    // query: {
-    //   enabled: profileAddr != zeroAddress,
-    // },
     query: {
-      enabled: true,
+      enabled: profileAddr != zeroAddress,
     },
   });
-
-  console.log({ nftCollectionsData });
 
   useEffect(() => {
     console.log({ multiReadError });
