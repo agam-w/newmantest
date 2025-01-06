@@ -20,7 +20,6 @@ export default function HomePage() {
     const getAuthToken = async () => {
       if (address) {
         authGetToken(address).then((token) => {
-          // console.log("token", token);
           $jwtToken.set(token);
         });
       }
@@ -78,21 +77,21 @@ export default function HomePage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-8 sm:mt-16">
                   <FeatureCard
                     icon={
-                      <Medal className="w-12 h-12 sm:w-16 sm:h-16 text-yellow-400" />
+                      <Medal className="w-12 h-12 sm:w-16 sm:h-16 text-yellow-400 m-auto" />
                     }
                     title="Earn Badges"
                     description="Complete quests and showcase your unique achievements in the NFT world"
                   />
                   <FeatureCard
                     icon={
-                      <Trophy className="w-12 h-12 sm:w-16 sm:h-16 text-green-400" />
+                      <Trophy className="w-12 h-12 sm:w-16 sm:h-16 text-green-400 m-auto" />
                     }
                     title="Collect Rewards"
                     description="Accumulate points and redeem them for exclusive NFTs and perks"
                   />
                   <FeatureCard
                     icon={
-                      <Wallet className="w-12 h-12 sm:w-16 sm:h-16 text-blue-400" />
+                      <Wallet className="w-12 h-12 sm:w-16 sm:h-16 text-blue-400 m-auto" />
                     }
                     title="Manage NFTs"
                     description="View, organize, and showcase your digital assets in one place"

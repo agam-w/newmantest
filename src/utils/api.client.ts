@@ -55,11 +55,9 @@ export async function questDone(quest: string) {
     body: JSON.stringify({ quest }),
   });
   if (res.status !== 200) {
-    console.log("res", res.statusText);
     throw new Error("Quest cannot be completed");
   }
   const data = (await res.json()) as { message: string };
-  console.log("data", data);
 }
 
 export async function claimQuest(quest: string) {
@@ -74,9 +72,7 @@ export async function claimQuest(quest: string) {
     body: JSON.stringify({ quest }),
   });
   if (res.status !== 200) {
-    console.log("res", res.statusText);
-    // throw new Error("Quest cannot be claimed");
+    throw new Error("Quest cannot be claimed");
   }
   const data = (await res.json()) as { message: string };
-  console.log("data", data);
 }

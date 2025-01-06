@@ -47,10 +47,6 @@ const NftUpdater = () => {
   });
 
   useEffect(() => {
-    console.log({ multiReadError });
-  }, [multiReadError]);
-
-  useEffect(() => {
     if (nftCollectionsData) {
       const tmpCount: number[] = [];
       nftCollectionsData?.map((item, index) =>

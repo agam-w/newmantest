@@ -84,7 +84,6 @@ api.post("/auth", async (req, res) => {
 });
 
 api.get("/profile", jwtMiddleware, async (req, res) => {
-  // console.log("req.user", req.user);
   // check if user exists in db
   const user = await findUserByAddress(req.user?.address || "");
   if (user) {
