@@ -1,12 +1,11 @@
 import express from "express";
-import jwt from "jsonwebtoken";
-import { SECRET_KEY } from "./constants";
 import { jwtMiddleware } from "./jwtMiddleware";
 import { db } from "../db";
 import { usersTable, userStatTable } from "../db/schema";
 import { eq } from "drizzle-orm";
 import { QuestType } from "../types";
 import { quests } from "../utils/quests";
+import { createJwtToken, findUserByAddress } from "./user";
 
 const api = express.Router();
 
@@ -30,10 +29,7 @@ api.post("/auth", async (req, res) => {
   }
 
   // check if user exists in db
-  const existingUser = await db.query.usersTable.findFirst({
-    where: eq(usersTable.walletAddress, address),
-  });
-
+  const existingUser = await findUserByAddress(address);
   if (existingUser) {
     // also upsert userStats, set questConnectDone as true
     await db
@@ -51,8 +47,7 @@ api.post("/auth", async (req, res) => {
         },
       });
 
-    // create jwt token from address
-    const token = jwt.sign({ id: existingUser.id, address }, SECRET_KEY);
+    const token = createJwtToken({ id: existingUser.id, address });
     res.json({ token });
     return;
   }
@@ -83,7 +78,7 @@ api.post("/auth", async (req, res) => {
     });
 
   // create jwt token from address
-  const token = jwt.sign({ id: user.id, address }, SECRET_KEY);
+  const token = createJwtToken({ id: user.id, address });
 
   res.json({ token });
 });
@@ -91,19 +86,12 @@ api.post("/auth", async (req, res) => {
 api.get("/profile", jwtMiddleware, async (req, res) => {
   // console.log("req.user", req.user);
   // check if user exists in db
-  const user = await db.query.usersTable.findFirst({
-    where: eq(usersTable.walletAddress, req.user?.address || ""),
-    with: {
-      userStats: true,
-    },
-  });
-
+  const user = await findUserByAddress(req.user?.address || "");
   if (user) {
     res.json({ user });
-    return;
+  } else {
+    res.status(404).json({ error: "User not found" });
   }
-
-  res.status(404).json({ error: "User not found" });
 });
 
 api.post("/profile/edit", jwtMiddleware, async (req, res) => {
@@ -114,13 +102,7 @@ api.post("/profile/edit", jwtMiddleware, async (req, res) => {
   }
 
   // check current user
-  const user = await db.query.usersTable.findFirst({
-    where: eq(usersTable.walletAddress, req.user?.address || ""),
-    with: {
-      userStats: true,
-    },
-  });
-
+  const user = await findUserByAddress(req.user?.address || "");
   if (user) {
     await db
       .update(usersTable)
@@ -153,13 +135,7 @@ api.post("/quest-done", jwtMiddleware, async (req, res) => {
   }
 
   // check current user
-  const user = await db.query.usersTable.findFirst({
-    where: eq(usersTable.walletAddress, req.user?.address || ""),
-    with: {
-      userStats: true,
-    },
-  });
-
+  const user = await findUserByAddress(req.user?.address || "");
   if (user && user.userStats) {
     // check if quest done but not claimed
     switch (quest) {
@@ -191,12 +167,7 @@ api.post("/claim", jwtMiddleware, async (req, res) => {
   }
 
   // check current user
-  const user = await db.query.usersTable.findFirst({
-    where: eq(usersTable.walletAddress, req.user?.address || ""),
-    with: {
-      userStats: true,
-    },
-  });
+  const user = await findUserByAddress(req.user?.address || "");
 
   if (user && user.userStats) {
     let claimable = false;

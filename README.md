@@ -8,22 +8,36 @@ https://newmantest.fly.dev
 
 Follow the steps bellow to run the project locally
 
-1. Setup environment variables. Copy the .env.example file to .env. Set `DATABASE_URL` to your PostgreSQL database connection string.
+Setup environment variables. Copy the .env.example file to .env. Set `DATABASE_URL` to your PostgreSQL database connection string.
 
 ```bash
 cp .env.example .env
 ```
 
-2. Install dependencies
+Install dependencies
 
 ```bash
 npm install
 ```
 
-3. Run the development server
+Run the development server
 
 ```bash
 npm run dev
 ```
 
-4. Open http://localhost:5173 with your browser to start developing.
+Open http://localhost:5173 with your browser to start developing.
+
+Testing
+
+```bash
+npm run test
+```
+
+## Deployment
+
+Deploy the project to Fly.io
+
+```bash
+flyctl deploy
+```
