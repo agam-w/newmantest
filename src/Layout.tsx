@@ -1,12 +1,12 @@
 import { PropsWithChildren } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import ConnectWalletButton from "./components/ConnectWalletButton";
 
 export default function Layout({ children }: PropsWithChildren) {
   return (
     <main className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-blue-900 text-white relative overflow-hidden">
       {/* Animated background */}
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="hidden md:block absolute inset-0 overflow-hidden">
         {[...Array(30)].map((_, i) => (
           <motion.div
             key={i}
