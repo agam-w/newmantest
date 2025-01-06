@@ -14,7 +14,7 @@ const mockNFTs = [
   {
     id: 1,
     name: "Cool Cat #1",
-    image: "/placeholder.svg?height=150&width=150",
+    image: "../../public/images/NFT/azuki.svg",
   },
   {
     id: 2,

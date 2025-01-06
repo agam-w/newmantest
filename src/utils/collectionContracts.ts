@@ -8,21 +8,21 @@ import { punksAbi } from "@/const/abi/nftCollections/punks";
 import { wpunksAbi } from "@/const/abi/nftCollections/wpunks";
 
 const baycCollectionAddr =
-  process.env.NEXT_PUBLIC_BAYC_COLLECTION_ADDRESS ?? "";
+  import.meta.env.VITE_PUBLIC_BAYC_COLLECTION_ADDRESS ?? "";
 const ppgCollectionAddr =
-  process.env.NEXT_PUBLIC_PUDGYPENGUINS_COLLECTION_ADDRESS ?? "";
+  import.meta.env.VITE_PUBLIC_PUDGYPENGUINS_COLLECTION_ADDRESS ?? "";
 const azukiCollectionAddr =
-  process.env.NEXT_PUBLIC_AZUKI_COLLECTION_ADDRESS ?? "";
+  import.meta.env.VITE_PUBLIC_AZUKI_COLLECTION_ADDRESS ?? "";
 const miladyCollectionAddr =
-  process.env.NEXT_PUBLIC_MILADY_COLLECTION_ADDRESS ?? "";
+  import.meta.env.VITE_PUBLIC_MILADY_COLLECTION_ADDRESS ?? "";
 const punksCollectionAddr =
-  process.env.NEXT_PUBLIC_CRYPTOPUNKS_COLLECTION_ADDRESS ?? "";
+  import.meta.env.VITE_PUBLIC_CRYPTOPUNKS_COLLECTION_ADDRESS ?? "";
 const wpunksCollectionAddr =
-  process.env.NEXT_PUBLIC_WRAPCRYPTOPUNKS_COLLECTION_ADDRESS ?? "";
+  import.meta.env.VITE_PUBLIC_WRAPCRYPTOPUNKS_COLLECTION_ADDRESS ?? "";
 const captaizCollectionAddr =
-  process.env.NEXT_PUBLIC_CAPTAINZ_COLLECTION_ADDRESS ?? "";
+  import.meta.env.VITE_PUBLIC_CAPTAINZ_COLLECTION_ADDRESS ?? "";
 const goldmilioCollectionAddr =
-  process.env.NEXT_PUBLIC_GOLDMILIO_COLLECTION_ADDRESS ?? "";
+  import.meta.env.VITE_PUBLIC_GOLDMILIO_COLLECTION_ADDRESS ?? "";
 
 export const baycCollectionContract = {
   abi: baycAbi,

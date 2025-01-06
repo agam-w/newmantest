@@ -9,7 +9,7 @@ import Profile from "./components/Profile";
 import NFTDisplay from "./components/NFTDisplay";
 import Quests from "./components/Quests";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import NftUpdater from "./updaters/nftUpdater";
+import NftUpdater from "./updaters/NftUpdater";
 
 export default function HomePage() {
   const { isConnecting, isConnected, address } = useAccount();

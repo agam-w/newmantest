@@ -7,6 +7,7 @@ import {
 import { useReadContracts } from "wagmi";
 import { zeroAddress } from "viem";
 import { useEffect } from "react";
+import { $getNftDataIsLoading, $nftDataCount } from "@/stores/auth";
 
 const NftUpdater = () => {
   const profileAddr = "0xd890d93be26351a064fdc64f0e253603e43270a8";
@@ -46,21 +47,27 @@ const NftUpdater = () => {
     },
   });
 
+  console.log({ nftCollectionsData });
+
   useEffect(() => {
     console.log({ multiReadError });
   }, [multiReadError]);
 
   useEffect(() => {
-    console.log({ nftCollectionsData });
+    if (nftCollectionsData) {
+      const tmpCount: number[] = [];
+      nftCollectionsData?.map((item, index) =>
+        tmpCount.push(Number(item.result))
+      );
 
-    // if (nftCollectionsData) {
-    //   const tmpCount: number[] = [];
-    //   nftCollectionsData?.map((item, index) =>
-    //     tmpCount.push(Number(item.result))
-    //   );
-    //   $userNftCount.set(tmpCount);
-    // }
+      $nftDataCount.set(tmpCount);
+      $getNftDataIsLoading.set(false);
+    } else {
+      $getNftDataIsLoading.set(true);
+    }
   }, [nftCollectionsData]);
+
+  return null;
 };
 
 export default NftUpdater;
