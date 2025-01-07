@@ -11,8 +11,8 @@ import { $getNftDataIsLoading, $nftDataCount } from "@/stores/auth";
 
 const NftUpdater = () => {
   const { address } = useAccount();
-  //   const mockProfileAddr = "0xd890d93be26351a064fdc64f0e253603e43270a8";
-  const profileAddr = address ?? zeroAddress;
+  const mockProfileAddr = "0xd890d93be26351a064fdc64f0e253603e43270a8";
+  const profileAddr = mockProfileAddr ?? zeroAddress;
 
   const { data: nftCollectionsData, error: multiReadError } = useReadContracts({
     contracts: [
